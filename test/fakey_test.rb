@@ -4,33 +4,32 @@ class FakeyTest < ActiveSupport::TestCase
   def inspect_foreign_keys(table)
     connection = ActiveRecord::Base.connection
     if defined?(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter)
-      connection.select_all <<-END_SQL
-    SELECT t1.table_name,
-           KCU.column_name,
-           KCU2.table_name as referenced_table_name,
-           KCU2.column_name as referenced_column_name
-      FROM (SELECT constraint_name, table_catalog, table_schema, table_name, constraint_type
-              FROM information_schema.table_constraints
-             WHERE table_name='#{table}') AS t1
-INNER JOIN information_schema.key_column_usage        AS KCU  ON (t1.constraint_name=KCU.constraint_name)
- LEFT JOIN information_schema.referential_constraints AS REF2 ON (REF2.constraint_name=t1.constraint_name)
- LEFT JOIN information_schema.key_column_usage        AS KCU2 ON (REF2.unique_constraint_name=KCU2.constraint_name)
-     WHERE t1.constraint_type = 'FOREIGN KEY'
-  ORDER BY table_name,
-           column_name
-END_SQL
+      connection.select_all <<-SQL
+SELECT tc.table_name,
+       kcu.column_name,
+       kcu2.table_name AS referenced_table_name,
+       kcu2.column_name AS referenced_column_name
+FROM information_schema.table_constraints       AS tc
+JOIN information_schema.key_column_usage        AS kcu  ON (tc.constraint_name        = kcu.constraint_name)
+JOIN information_schema.referential_constraints AS rc   ON (tc.constraint_name        = rc.constraint_name)
+JOIN information_schema.key_column_usage        AS kcu2 ON (rc.unique_constraint_name = kcu2.constraint_name)
+WHERE tc.constraint_type = 'FOREIGN KEY'
+  AND tc.table_name='#{table}'
+ORDER BY table_name,
+        column_name
+SQL
     elsif defined?(ActiveRecord::ConnectionAdapters::MysqlAdapter)
-      connection.select_all <<-END_SQL
-    SELECT kcu.table_name,
-           kcu.column_name,
-           kcu.referenced_table_name,
-           kcu.referenced_column_name
-      FROM information_schema.table_constraints tc
-      JOIN information_schema.key_column_usage kcu USING(constraint_name)
-     WHERE tc.constraint_type = 'FOREIGN KEY'
-  ORDER BY table_name,
-           column_name
-END_SQL
+      connection.select_all <<-SQL
+SELECT kcu.table_name,
+       kcu.column_name,
+       kcu.referenced_table_name,
+       kcu.referenced_column_name
+FROM information_schema.table_constraints tc
+JOIN information_schema.key_column_usage kcu USING(constraint_name)
+WHERE tc.constraint_type = 'FOREIGN KEY'
+ORDER BY table_name,
+         column_name
+SQL
     end
   end
 

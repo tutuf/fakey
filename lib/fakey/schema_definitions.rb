@@ -1,27 +1,5 @@
 # -*- encoding : utf-8 -*-
 module Fakey
-  #TODO: support for change_table, add_column and etc. that depend on ActiveRecord::ConnectionAdapters::Table
-  # module Table
-  #   def self.included(base)
-  #     base.class_eval do
-  #       # alias_method_chain :to_sql, :foreign_keys
-  #       alias_method_chain :references, :foreign_keys
-  #       alias_method_chain :belongs_to, :foreign_keys
-  #     end
-  #   end
-  #
-  #   def references_with_foreign_keys(*args)
-  #     options = args.extract_options!
-  #     polymorphic = options.delete(:polymorphic)
-  #     args.each do |col|
-  #       @base.add_column(@table_name, "#{col}_id", :integer, options)
-  #       @base.add_foreign_key(@table_name, col, "#{col}_id", options)
-  #       @base.add_column(@table_name, "#{col}_type", :string, polymorphic.is_a?(Hash) ? polymorphic : options) unless polymorphic.nil?
-  #     end
-  #   end
-  #   alias :belongs_to_with_foreign_keys :references_with_foreign_keys
-  # end
-
   module TableDefinition
     def self.included(base)
       base.class_eval do
@@ -59,6 +37,12 @@ module Fakey
         sql << ',' <<  @foreign_keys.map{|fk| @base.add_foreign_key(fk[:to_table],fk[:column_name],fk[:options])}.join(",")
       end
       sql
+    end
+
+    def foreign_key(*args)
+      return unless Array === args.first
+      composite_foreign_key, options = args.first, args.last
+      
     end
   end
 
