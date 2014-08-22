@@ -1,4 +1,4 @@
-Copyright (c) 2014 Sava Chankov
+Copyright (c) 2009-2014 Tutuf Ltd
 
 MIT License
 

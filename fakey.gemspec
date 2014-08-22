@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Fakey::VERSION
   spec.authors       = ["Sava Chankov"]
   spec.email         = ["sava@tutuf.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
+  spec.description   = %q{Foreign keys support for ActiveRecord migrations}
+  spec.summary       = %q{Foreign keys support for ActiveRecord migrations}
   spec.homepage      = ""
   spec.license       = "MIT"
 
@@ -18,6 +18,9 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
+  spec.add_dependency "activerecord", "~>3.2.18"
+
+  spec.add_development_dependency "rails", "~>3.2.18"
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
 end
