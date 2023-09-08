@@ -15,7 +15,8 @@ containing a lot of foreign keys.
 Fakey is fully tested by directly inspecting schema in the database and
 supports both MySQL and PostgreSQL.
 
-##Example
+## Example
+
   Fakey hooks foreign keys to the standard `belongs_to` and `references` methods in migrations.
 
     # Standard usage
@@ -59,7 +60,7 @@ supports both MySQL and PostgreSQL.
       t.belongs_to :author
     end
 
-##Compatibility
+## Compatibility
 
 Rails: 3.2+
 
